@@ -4,6 +4,9 @@ import { Fraction } from "fractional";
 class RecipeView {
   #parentElement = document.querySelector(".recipe");
   #data;
+  #errorMessage = `We could not find that recipe. Please try another one!`;
+  #successMessage = ``;
+
   render(data) {
     this.#data = data;
     const markup = this.#generateMarkup();
@@ -26,6 +29,41 @@ class RecipeView {
     this.#parentElement.innerHTML = "";
     this.#parentElement.insertAdjacentHTML("afterbegin", markup);
   };
+
+  // publisher
+  addHandlerRender(handler) {
+    ["hashchange", "load"].forEach((e) => window.addEventListener(e, handler));
+  }
+
+  renderError(message = this.#errorMessage) {
+    const markup = `
+    <div class="error">
+            <div>
+              <svg>
+                <use href="${icons}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+          </div> 
+    `;
+    this.#clear();
+    this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+  }
+
+  renderSuccess(message = this.#successMessage) {
+    const markup = `
+    <div class="message">
+            <div>
+              <svg>
+                <use href="${icons}#icon-smile"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+          </div> 
+    `;
+    this.#clear();
+    this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+  }
 
   #generateMarkup() {
     return `

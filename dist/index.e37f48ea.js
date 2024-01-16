@@ -599,13 +599,14 @@ const controlRecipes = async function() {
         (0, _recipeViewJsDefault.default).render(_modelJs.state.recipe);
     // const recipeView = new recipeView(model.state.recipe);
     } catch (err) {
+        (0, _recipeViewJsDefault.default).renderError();
         console.log(err);
     }
 };
-[
-    "hashchange",
-    "load"
-].forEach((e)=>window.addEventListener(e, controlRecipes));
+const init = function() {
+    (0, _recipeViewJsDefault.default).addHandlerRender(controlRecipes);
+};
+init();
 
 },{"core-js/modules/web.immediate.js":"49tUX","./model.js":"Y4A21","./views/recipeView.js":"l60JC","regenerator-runtime/runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"49tUX":[function(require,module,exports) {
 "use strict";
@@ -1846,6 +1847,8 @@ parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
 var _helpersJs = require("./helpers.js");
+var _recipeViewJs = require("./views/recipeView.js");
+var _recipeViewJsDefault = parcelHelpers.interopDefault(_recipeViewJs);
 const state = {
     recipe: {}
 };
@@ -1865,7 +1868,7 @@ const loadRecipe = async function(id) {
         };
         console.log("yes", state.recipe);
     } catch (err) {
-        alert(err);
+        throw err;
     }
 };
 
@@ -2529,6 +2532,8 @@ var _fractional = require("fractional");
 class RecipeView {
     #parentElement = document.querySelector(".recipe");
     #data;
+    #errorMessage = `We could not find that recipe. Please try another one!`;
+    #successMessage = ``;
     render(data) {
         this.#data = data;
         const markup = this.#generateMarkup();
@@ -2549,6 +2554,41 @@ class RecipeView {
         this.#parentElement.innerHTML = "";
         this.#parentElement.insertAdjacentHTML("afterbegin", markup);
     };
+    // publisher
+    addHandlerRender(handler) {
+        [
+            "hashchange",
+            "load"
+        ].forEach((e)=>window.addEventListener(e, handler));
+    }
+    renderError(message = this.#errorMessage) {
+        const markup = `
+    <div class="error">
+            <div>
+              <svg>
+                <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+          </div> 
+    `;
+        this.#clear();
+        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    renderSuccess(message = this.#successMessage) {
+        const markup = `
+    <div class="message">
+            <div>
+              <svg>
+                <use href="${(0, _iconsSvgDefault.default)}#icon-smile"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+          </div> 
+    `;
+        this.#clear();
+        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
     #generateMarkup() {
         return `
     <figure class="recipe__fig">
