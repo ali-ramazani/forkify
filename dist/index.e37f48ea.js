@@ -617,8 +617,8 @@ const controlSearchResults = async function() {
         // 2) Load search results
         await _modelJs.loadSearchResults(query);
         // 3) Render results
-        console.log(_modelJs.state.search.results);
-        (0, _resultsViewJsDefault.default).render(_modelJs.state.search.results);
+        // console.log(model.getSearchResultsPage(1));
+        (0, _resultsViewJsDefault.default).render(_modelJs.getSearchResultsPage());
     } catch (err) {
         console.log(err);
     }
@@ -1867,6 +1867,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 parcelHelpers.export(exports, "loadSearchResults", ()=>loadSearchResults);
+parcelHelpers.export(exports, "getSearchResultsPage", ()=>getSearchResultsPage);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _configJs = require("./config.js");
 var _helpersJs = require("./helpers.js");
@@ -1874,7 +1875,9 @@ const state = {
     recipe: {},
     search: {
         query: "",
-        results: []
+        results: [],
+        page: 1,
+        resultsPerPage: (0, _configJs.RES_PER_PAGE)
     }
 };
 const loadRecipe = async function(id) {
@@ -1913,6 +1916,12 @@ const loadSearchResults = async function(query) {
         console.error(`${err} \u{1F4A5}\u{1F4A5}\u{1F4A5}\u{1F4A5}`);
         throw err;
     }
+};
+const getSearchResultsPage = function(page = state.search.page) {
+    state.search.page = page;
+    const start = (page - 1) * 10;
+    const end = page * state.search.resultsPerPage;
+    return state.search.results.slice(start, end);
 }; // https://forkify-api.herokuapp.com/api/get?rId=47746
 
 },{"regenerator-runtime":"dXNgZ","./config.js":"k5Hzs","./helpers.js":"hGI1E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dXNgZ":[function(require,module,exports) {
